@@ -1,10 +1,14 @@
 from types import SimpleNamespace
 import sys
 sys.path.append("./libs")
+sys.path.append("./libs/init")
+sys.path.append("./libs/loop")
 sys.path.append("./libs/utils")
 
+
 import interpolation
-import inner_coefficient
+import outer_init
+import loop
 
 tube = SimpleNamespace()
 tube.outer_diameter = 25 # mm
@@ -34,22 +38,32 @@ coefficients.heat_conductivity = float(input("Heat conductivity coefficient: " i
 
 temperature = SimpleNamespace()
 temperature.vapor = float(input("Vapor temperature: "))
-temperature.condensate = float(input("Condensate temperature: "))
 temperature.start = float(input("Temperature of the water at the start: "))
 temperature.end = float(input("Temperature of the water at the end: "))
 
-consumption = float(input("Consumption [m3 / h]: "))
-difference = float(input("Triggering difference between two values of heat transfer coefficient K: "))
-amount = int(input("Amount of calculating heat transfer coefficient: "))
+other = SimpleNamespace()
+other.consumption = float(input("Consumption [m3 / h]: "))
+other.difference = float(input("Triggering difference between two values of heat transfer coefficient K: "))
+other.amount = int(input("Amount of calculating heat transfer coefficient: ")) if True else 100
 
 
 if (temperature.end > temperature.vapor): 
     raise ValueError("Vapor temparature must be greater than temparature of the water at the end point.")
 
 ###
-
 user_vapor = interpolation.calc_vapor(vapor, temperature.vapor)
-user_condensate = interpolation.calc_condensate(condensate, temperature.condensate)
+init = outer_init(tube, user_vapor, condensate, temperature, other)
 
-a1 = inner_coefficient(user_condensate, tube, consumption)
-print(a1)
+i = 0
+t_w = init.t_w
+K = init.K
+print(K)
+while (i < 10):
+    end = loop(t_w, K, init.a1, tube, user_vapor, condensate, temperature)
+    print(str(i) + ") Difference: %.20f" % (end.K - K))
+    t_w = end.t_w
+    K = end.K
+    i = i + 1
+
+
+

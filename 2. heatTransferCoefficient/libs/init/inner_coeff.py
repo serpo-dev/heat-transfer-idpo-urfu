@@ -1,7 +1,7 @@
 import sys
 import math
 
-def  inner_coefficient(condensate, tube, consumption):
+def inner_coefficient(condensate, tube, consumption):
     d = tube.outer_diameter
     ww = tube.wall_width
     v = condensate.viscosity
@@ -22,5 +22,6 @@ def  inner_coefficient(condensate, tube, consumption):
     a1 = Nu * cond / d
 
     return a1
+
 
 sys.modules[__name__] = inner_coefficient
