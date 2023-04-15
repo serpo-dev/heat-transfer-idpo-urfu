@@ -17,11 +17,7 @@ condensate.viscosity = [0.0010, 0.0005, 0.0003, 0.0002, 0.0002] # Pa * s
 condensate.heat_capacity = [4183, 4181, 4220, 4250, 4313]  # J / (kg * K)
 condensate.heat_conductivity = [0.599, 0.648, 0.683, 0.686] # W / (m * K)
 
-config = {
-    "tube": tube,
-    "vapor": vapor,
-    "condensate": condensate
-}
-
+def config():
+    return tube, vapor, condensate
 
 sys.modules[__name__] = config

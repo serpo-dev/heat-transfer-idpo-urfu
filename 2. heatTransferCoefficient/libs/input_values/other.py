@@ -15,10 +15,11 @@ def input_other(lang):
             else 'Количество знаков после запятой (например, "2" будет означать окончание цикла, если (K2 - K1) < 0.01): '
         ))
     other.amount = int(
-        input("Amount of calculating heat transfer coefficient: ")
-        if lang == "EN"
-        else "Максимальное количество циклов для рассчета: "
-    )
+        input(
+            "Amount of calculating heat transfer coefficient: "
+            if lang == "EN"
+            else "Максимальное количество циклов для рассчета: "
+        ))
     return other
 
 
