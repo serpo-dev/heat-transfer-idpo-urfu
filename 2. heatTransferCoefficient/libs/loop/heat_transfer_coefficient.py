@@ -1,7 +1,7 @@
 import sys
 from types import SimpleNamespace
 
-import formula
+from libs.utils import formula
 
 
 def loop(prev_t_w, prev_K, a1, t_s, tube, vapor, condensate, temperature):

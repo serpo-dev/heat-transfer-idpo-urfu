@@ -1,12 +1,11 @@
 import sys
 
-import coefficients
-import temperature
-import other
-
+from libs.input_values import coefficients
+from libs.input_values import temperature
+from libs.input_values import other 
 
 def input_values():
-    lang = "EN" if not (input("Continue with English? (Any keyword - English; N - Russian)") == "N") else "RU"
+    lang = "RU" if not (input("Продолжить на русском? (Любая клавиша - Русский; N - English)") == "N") else "EN"
     print("Hello! This programm has been made for calculating heat transfer coefficient." if lang == "EN" else "Привет, данная программа была создана для подсчета коэффециента теплопередачи.")
     if (lang == "RU"):
         print("Авторы программы - студенты гр. Х-300007, а именно Власова А., Глебова Д., Дернина Д., Лежнева Ю., Потапов С.")

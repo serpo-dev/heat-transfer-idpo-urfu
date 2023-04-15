@@ -1,6 +1,6 @@
 import sys
 
-import interpolation
+from libs import interpolation
 
 round_num = 20
 

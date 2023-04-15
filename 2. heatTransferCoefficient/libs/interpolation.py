@@ -1,7 +1,7 @@
 import sys
 from types import SimpleNamespace
 
-import search
+from libs.utils import search
 
 
 class TwoPoints:

@@ -8,10 +8,10 @@ sys.path.append("./libs/loop")
 sys.path.append("./libs/utils")
 
 
-import input_values
-import interpolation
-import loop
-import outer_init
+from libs.input_values import input_values
+from libs import interpolation
+from libs.loop import loop
+from libs.init import outer_init
 import config
 
 tube, vapor, condensate = config

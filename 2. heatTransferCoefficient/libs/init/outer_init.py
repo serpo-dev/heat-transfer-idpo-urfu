@@ -2,8 +2,8 @@ import sys
 from types import SimpleNamespace
 
 
-import inner_coeff
-import formula
+from libs.init import inner_coeff
+from libs.utils import formula
 
 
 
