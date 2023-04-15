@@ -5,22 +5,27 @@ import interpolation
 round_num = 20
 
 class Formula:
+    def sol_temp (temperature) :
+        t_s = (temperature.start + temperature.end) / 2
+        return t_s
+
     def wall_temp_init(t):
         wall_temp = (t.vapor + ((t.start + t.end) / 2)) / 2 
         rounded = round(wall_temp, round_num)
         return rounded
 
-    def heat_flux_density(K, temperature):
+    def heat_flux_density(t_s, K, temperature):
         t_v = temperature.vapor
-        t_s = (temperature.start + temperature.end) / 2
+
         q = K * (t_v - t_s)
-        rounded = round(t_v, round_num), round(t_s, round_num), round(q, round_num)
+        rounded = round(q, round_num)
         return rounded
 
     def wall_temp_loop(t_v, t_s, q, a1, a2):
         wall_temp = ((t_v - (q / a2)) + (t_s + (q / a1))) / 2 
         rounded = round(wall_temp, round_num)
         return rounded
+
 
     def cond_temp(t, wall_temp):
         cond_temp = 0.5 * (t.vapor + wall_temp)
