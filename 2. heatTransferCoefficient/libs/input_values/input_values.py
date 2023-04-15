@@ -16,7 +16,7 @@ def input_values():
     t = temperature(lang)
     o = other(lang)
 
-    return c, t, o
+    return lang, c, t, o
 
     
 

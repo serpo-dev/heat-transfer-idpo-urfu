@@ -1,14 +1,13 @@
-
-
 import sys
 from types import SimpleNamespace
 
 
 def input_other(lang):
     other = SimpleNamespace()
+
     other.consumption = float(
         input("Consumption [m3 / h]: " if lang == "EN" else "Расход [м3 / ч]: "))
-    other.difference = float(
+    other.difference = int(
         input(
             'Limiting float points\' difference between two values of heat transfer coefficient (for example,"2" will stop loop if (K2 - K1) < 0.01): '
             if lang == "EN"
