@@ -66,7 +66,7 @@ with open("./rr.txt", "r") as f:
 
         t_average = (sum(t_diff_arr) / len(t_diff_arr)) if len(t_diff_arr) > 0 else 0
 
-        print("Average R-R interval: {} ".format("%.3f" % t_average), "|", "{} seconds in processing".format(k))
+        print("Average R-R interval: {} ".format("%.3f" % t_average), "|", "{} s in processing".format(k))
         k += 1
         j += FREQUENCY
 

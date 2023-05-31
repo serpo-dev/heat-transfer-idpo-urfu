@@ -93,7 +93,7 @@ def draw(x_arr, y_arr):
 
 data = get_data()
 x, y = get_axes(data)
-draw(x, y)
+# draw(x, y)
 
 def process(x, y):
     Pmax = max(x)
