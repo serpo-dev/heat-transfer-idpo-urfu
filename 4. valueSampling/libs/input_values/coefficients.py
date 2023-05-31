@@ -27,6 +27,12 @@ def input_coefficients(lang):
         raise ValueError(
             "Heat conductivity coefficient must be less or equal to 1."
         ) 
+        
+    coefficients.heat_loss = float(input("Heat-loss coefficient (0.02-0.05): " if lang == "EN" else "Коэффициент потерь тепла (0.02-0.05): "))
+    if (coefficients.heat_loss < 0.02 or coefficients.heat_loss > 0.05):
+        raise ValueError(
+            "Heat-loss coefficient must be in a range from 0.02 to 0.05."
+        ) 
 
     return coefficients
 

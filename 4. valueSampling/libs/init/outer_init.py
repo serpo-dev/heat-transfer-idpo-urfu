@@ -19,6 +19,6 @@ def outer_init(tube, vapor, condensate, temperature, other):
     a2 = formula.outer_coeff(t_c, t_w, tube, vapor, c)
 
     K = formula.heat_transfer(a1, a2, tube)
-    return SimpleNamespace(t_s=t_s, t_w=t_w, a1=a1, K=K),  w
+    return SimpleNamespace(t_s=t_s, t_w=t_w, a1=a1, K=K, c=c),  w
 
 sys.modules[__name__] = outer_init
