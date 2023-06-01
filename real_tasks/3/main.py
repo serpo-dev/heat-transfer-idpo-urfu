@@ -1,5 +1,5 @@
 import csv
-
+import numpy
 import matplotlib.pyplot as plt
 
 #   o Интерполяция – повышение частоты дискретизации в целое число раз;
@@ -28,12 +28,15 @@ def draw(voltage, time_coeff, name):
     plt.plot(time, voltage)
     plt.xlabel("Время (с)")
     plt.ylabel("мкВ")
-    plt.title("DOWNSAMPLING_COEFF = {}".format(DOWNSAMPLING_COEFF) if name == "downsampling" else "NO DOWNSAMPLING")
+    plt.title("{}_COEFF_{}".format(name.upper(), DOWNSAMPLING_COEFF) if name != "default" else "NO DOWNSAMPLING")
     plt.grid(True)
-    plt.savefig("downsampling_{}.png".format(DOWNSAMPLING_COEFF) if name == "downsampling" else "no_downsampling.png")
+    plt.savefig("{}_coeff_{}.png".format(name, DOWNSAMPLING_COEFF) if name != "default" else "no_dwnsmp.png")
     plt.close()
         
-def downsampling(data):
+        
+# METHOD 1 
+
+def dwnsmp_semiwindows(data):
     new_data = []
     window_size = 2 * DOWNSAMPLING_COEFF
 
@@ -60,18 +63,76 @@ def downsampling(data):
     i -= window_size
     if len(data) % DOWNSAMPLING_COEFF > 0:
         window = data[i : ]
-        average = sum(window)  / len(window)
-        new_data.append(average)
+        new_data.append(max(window))
         
     return new_data
 
 
-voltage = read_data(FILENAME)
-voltage_dwnsmp = downsampling(data=voltage)
+# METHOD 2
 
+def dwnsmp_prev_diff(data):
+    new_data = []
+    window_size = DOWNSAMPLING_COEFF
+
+    i = 0
+    while len(new_data) < len(data) // DOWNSAMPLING_COEFF:      
+        window = data[i : i + window_size ]
+        i += window_size
+        
+        prev = sum(window) / len(window) if i > 0 else new_data[-1]
+        
+        max_diff_val = max(window, key = lambda cur : abs(cur - prev))
+        new_data.append(max_diff_val)
+    
+    i -= window_size
+    if len(data) % DOWNSAMPLING_COEFF > 0:
+        window = data[i : ]
+        max_diff_val = window.sort(key = lambda cur : abs(cur - new_data[-1]))
+        new_data.append(max_diff_val)
+        
+    return new_data
+        
+def dwnsmp_avrg_diff(data):
+    average = sum(data) / len(data)
+    sorted_data = sorted(enumerate(data), key = lambda x : abs(x[1] - average), reverse=True)
+    sorted_data_length = len(data) // DOWNSAMPLING_COEFF + 1
+    
+    new_data_enum = []
+    i = 0
+    for item in sorted_data:
+        if (i >= sorted_data_length):
+            break
+        if i == 0:
+            new_data_enum.append(item)
+            i += 1
+            continue
+        
+        if abs(new_data_enum[-1][0] / FREQUENCY - item[0] / FREQUENCY) > (DOWNSAMPLING_COEFF / FREQUENCY):
+            new_data_enum.append(item)
+            i += 1
+    
+    new_data_enum_sorted = sorted(new_data_enum, key = lambda x : x[0]) 
+    new_data = [d[1] for d in new_data_enum_sorted]
+    return new_data
+
+
+
+voltage = read_data(FILENAME)
+
+vltg_dwnsmp_mtd_1 = dwnsmp_semiwindows(data=voltage)
+vltg_dwnsmp_mtd_2 = dwnsmp_prev_diff(data=voltage)
+vltg_dwnsmp_mtd_3 = dwnsmp_avrg_diff(data=voltage)
+
+# Default data
 draw(voltage=voltage[:GRAPH_SAMPLE_LENGTH], time_coeff=1, name="default")
-draw(voltage=voltage_dwnsmp[:GRAPH_SAMPLE_LENGTH // DOWNSAMPLING_COEFF], time_coeff=DOWNSAMPLING_COEFF, name="downsampling")
+
+# Nethod 1 (not recommended)
+draw(voltage=vltg_dwnsmp_mtd_1[:GRAPH_SAMPLE_LENGTH // DOWNSAMPLING_COEFF + 1], time_coeff=DOWNSAMPLING_COEFF, name="dwnsmp_mtd_1")
+# Method 2 (not recommended)
+draw(voltage=vltg_dwnsmp_mtd_2[:GRAPH_SAMPLE_LENGTH // DOWNSAMPLING_COEFF + 1], time_coeff=DOWNSAMPLING_COEFF, name="dwnsmp_mtd_2")
+# Method 3 (recommended)
+draw(voltage=vltg_dwnsmp_mtd_3[:GRAPH_SAMPLE_LENGTH // DOWNSAMPLING_COEFF + 1], time_coeff=DOWNSAMPLING_COEFF, name="dwnsmp_mtd_3")
 
 print("Before: length = %s" % len(voltage),"and", "frequency = %s Hz." % (FREQUENCY))
-print("After: length = %s" % len(voltage_dwnsmp),"and", "frequency = %s Hz." % (FREQUENCY / DOWNSAMPLING_COEFF))
-print('Completed! Check the files "no_downsampling.png" and "downsampling_{}.png" to see the result.'.format(DOWNSAMPLING_COEFF))
+print("After: length = %s" % len(vltg_dwnsmp_mtd_1 or vltg_dwnsmp_mtd_2),"and", "frequency = %s Hz." % (FREQUENCY / DOWNSAMPLING_COEFF))
+print('Completed! Check the files "no_dwnsmp.png", "dwnsmp_mtd_1_coeff_{}.png", "dwnsmp_mtd_2_coeff_{}.png" and "dwnsmp_mtd_3_coeff_{}.png" to see the result.'.format(DOWNSAMPLING_COEFF, DOWNSAMPLING_COEFF, DOWNSAMPLING_COEFF))
